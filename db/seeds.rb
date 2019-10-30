@@ -428,10 +428,352 @@ novel_assignments = [
   },
 ]
 
+lit_assignments = [
+  {
+    description: 'Venerable Bede A30-33',
+    og_date: '2018-08-29',
+    adj_date: '2018-08-29'
+  },
+  {
+    description: 'Dream of the Rood A33-37',
+    og_date: '2018-08-29',
+    adj_date: '2018-08-29'
+  },
+  {
+    description: 'Scholar and His Cat A134',
+    og_date: '2018-08-29',
+    adj_date: '2018-08-29'
+  },
+  {
+    description: 'Charlottesville: Why Jefferson Matters (Collab)',
+    og_date: '2018-08-29',
+    adj_date: '2018-08-29'
+  },
+  {
+    description: 'SPLC Guide for Students',
+    og_date: '2018-08-29',
+    adj_date: '2018-08-29'
+  },
+  {
+    description: 'Illusion of Progress Ch 1 (Collab)',
+    og_date: '2018-08-29',
+    adj_date: '2018-08-29'
+  },
+  {
+    description: 'Illusion of Progress Ch 2 (Collab)',
+    og_date: '2018-08-29',
+    adj_date: '2018-08-29'
+  },
+  {
+    description: 'Beowulf A37-109',
+    og_date: '2018-09-03',
+    adj_date: '2018-09-03'
+  },
+  {
+    description: 'Section Prep 1',
+    og_date: '2018-09-05',
+    adj_date: '2018-09-05'
+  },
+  {
+    description: "Memorize Chaucer's General Prologue lines 1-18",
+    og_date: '2018-09-03',
+    adj_date: '2018-09-03'
+  },
+  {
+    description: "Second Nun's Tale",
+    og_date: '2018-09-10',
+    adj_date: '2018-09-10'
+  },
+  {
+    description: "Piers Plowman A388-408",
+    og_date: '2018-09-10',
+    adj_date: '2018-09-10'
+  },
+  {
+    description: "Incarnation and Crucifixion A426-9",
+    og_date: '2018-09-10',
+    adj_date: '2018-09-10'
+  },
+  {
+    description: "A Book of Showings A430-43",
+    og_date: '2018-09-10',
+    adj_date: '2018-09-10'
+  },
+  {
+    description: "Section Prep 2",
+    og_date: '2018-09-12',
+    adj_date: '2018-09-12'
+  },
+  {
+    description: "Canterbury Tales A256-62 to line 18",
+    og_date: '2018-09-17',
+    adj_date: '2018-09-17'
+  },
+  {
+    description: "Miller's Tale A282-98",
+    og_date: '2018-09-17',
+    adj_date: '2018-09-17'
+  },
+  {
+    description: "Wife of Bath's Tale A300, 319-28",
+    og_date: '2018-09-17',
+    adj_date: '2018-09-17'
+  },
+  {
+    description: "Section Prep 3",
+    og_date: '2018-09-19',
+    adj_date: '2018-09-19'
+  },
+  {
+    description: "Chevrefoil A185-87",
+    og_date: '2018-09-24',
+    adj_date: '2018-09-24'
+  },
+  {
+    description: "Gawain and the Green Knight A201-56",
+    og_date: '2018-09-24',
+    adj_date: '2018-09-24'
+  },
+  {
+    description: "Section Prep 4",
+    og_date: '2018-09-26',
+    adj_date: '2018-09-26'
+  },
+  {
+    description: "Second Shepherd's Play A465-94",
+    og_date: '2018-10-01',
+    adj_date: '2018-10-01'
+  },
+  {
+    description: "Shakespeare B718-21",
+    og_date: '2018-10-10',
+    adj_date: '2018-10-10'
+  },
+  {
+    description: "Othello B803-89",
+    og_date: '2018-10-10',
+    adj_date: '2018-10-10'
+  },
+  {
+    description: "Section Prep 5",
+    og_date: '2018-10-10',
+    adj_date: '2018-10-10'
+  },
+  {
+    description: "Morte D'Arthur A534-54",
+    og_date: '2018-10-15',
+    adj_date: '2018-10-15'
+  },
+  {
+    description: "Obedience B149-50",
+    og_date: '2018-10-15',
+    adj_date: '2018-10-15'
+  },
+  {
+    description: "Francis Bacon, Of Masques B1212-13, B1222-23",
+    og_date: '2018-10-15',
+    adj_date: '2018-10-15'
+  },
+  {
+    description: "Faerie Queen B247-49",
+    og_date: '2018-10-15',
+    adj_date: '2018-10-15'
+  },
+  {
+    description: "Book III, Title/Summary, Cantos 11-12 B418, B432-56",
+    og_date: '2018-10-15',
+    adj_date: '2018-10-15'
+  },
+  {
+    description: "Section Prep 6",
+    og_date: '2018-10-17',
+    adj_date: '2018-10-17'
+  },
+  {
+    description: "English Bible B145-8",
+    og_date: '2018-10-22',
+    adj_date: '2018-10-22'
+  },
+  {
+    description: "Read Section Preps 7 & 8, choose lyric poem",
+    og_date: '2018-10-22',
+    adj_date: '2018-10-22'
+  },
+  {
+    description: "Section Prep 7",
+    og_date: '2018-10-24',
+    adj_date: '2018-10-24'
+  },
+  {
+    description: "Section Prep 8",
+    og_date: '2018-10-24',
+    adj_date: '2018-10-24'
+  },
+  {
+    description: "John Milton B1447-51",
+    og_date: '2018-10-29',
+    adj_date: '2018-10-29'
+  },
+  {
+    description: "Paradise Lost Book 1 B1493-1514",
+    og_date: '2018-10-29',
+    adj_date: '2018-10-29'
+  },
+  {
+    description: "Paradise Lost Book 4 B1553-75",
+    og_date: '2018-10-29',
+    adj_date: '2018-10-29'
+  },
+  {
+    description: "Paradise Lost Book 9 B1643-68",
+    og_date: '2018-10-29',
+    adj_date: '2018-10-29'
+  },
+  {
+    description: "Section Prep 9",
+    og_date: '2018-10-31',
+    adj_date: '2018-10-31'
+  },
+  {
+    description: "\"Aristotle Comes Through\" Buzzfeed article",
+    og_date: '2018-11-07',
+    adj_date: '2018-11-07'
+  },
+  {
+    description: "Anatomical Exercises B1236-8",
+    og_date: '2018-11-07',
+    adj_date: '2018-11-07'
+  },
+  {
+    description: "Anatomy of Melancholy B1239 (only 1st page req'd)",
+    og_date: '2018-11-07',
+    adj_date: '2018-11-07'
+  },
+  {
+    description: "Blazing World B1434-5, B1441-7",
+    og_date: '2018-11-07',
+    adj_date: '2018-11-07'
+  },
+  {
+    description: "Pilgrim's Progress C95-99",
+    og_date: '2018-11-07',
+    adj_date: '2018-11-07'
+  },
+  {
+    description: "Alexander Pope C486-90, C554-60",
+    og_date: '2018-11-07',
+    adj_date: '2018-11-07'
+  },
+  {
+    description: "Jonathan Swift & A Modest Proposal C454-60",
+    og_date: '2018-11-07',
+    adj_date: '2018-11-07'
+  },
+  {
+    description: "Section Prep 10",
+    og_date: '2018-11-07',
+    adj_date: '2018-11-07'
+  },
+  {
+    description: "Book of Common Prayer B161-64",
+    og_date: '2018-11-12',
+    adj_date: '2018-11-12'
+  },
+  {
+    description: "Dryden: Marriage a la Mode C34-35, C38",
+    og_date: '2018-11-12',
+    adj_date: '2018-11-12'
+  },
+  {
+    description: "Behn: Oronooko C133-35, C139-86",
+    og_date: '2018-11-12',
+    adj_date: '2018-11-12'
+  },
+  {
+    description: "Fantomina C608-28",
+    og_date: '2018-11-12',
+    adj_date: '2018-11-12'
+  },
+  {
+    description: "Section Prep 11",
+    og_date: '2018-11-14',
+    adj_date: '2018-11-14'
+  },
+  {
+    description: "Of Slavery C961-5",
+    og_date: '2018-11-26',
+    adj_date: '2018-11-26'
+  },
+  {
+    description: "Astell, A Preface C965-9",
+    og_date: '2018-11-26',
+    adj_date: '2018-11-26'
+  },
+  {
+    description: "The Interesting Narrative C980-90",
+    og_date: '2018-11-26',
+    adj_date: '2018-11-26'
+  },
+  {
+    description: "Occam Personal Narrative (Collab)",
+    og_date: '2018-11-26',
+    adj_date: '2018-11-26'
+  },
+  {
+    description: "Marrant Narrative (Collab, 48-59 68-70)",
+    og_date: '2018-11-26',
+    adj_date: '2018-11-26'
+  },
+  {
+    description: "Section Prep 11",
+    og_date: '2018-11-28',
+    adj_date: '2018-11-28'
+  },
+  {
+    description: "Notes on the State of Virginia (Collab)",
+    og_date: '2018-12-03',
+    adj_date: '2018-12-03'
+  },
+  {
+    description: "Wheatley to Occam & to Dartmouth (Collab)",
+    og_date: '2018-12-03',
+    adj_date: '2018-12-03'
+  },
+  {
+    description: "Sancho, Selected Letters (Collab)",
+    og_date: '2018-12-03',
+    adj_date: '2018-12-03'
+  },
+  {
+    description: "Rough vs. Final Draft, Declaration of Independence (Collab)",
+    og_date: '2018-12-03',
+    adj_date: '2018-12-03'
+  },
+  {
+    description: "Virginia Statute for Religious Freedom (Collab)",
+    og_date: '2018-12-03',
+    adj_date: '2018-12-03'
+  },
+  {
+    description: "Jefferson's gravestone materials (Collab)",
+    og_date: '2018-12-03',
+    adj_date: '2018-12-03'
+  },
+  {
+    description: "Section Prep 12",
+    og_date: '2018-12-05',
+    adj_date: '2018-12-05'
+  },
+]
+
 Assignment.create(leadership_assignments) do |asg|
   asg.course = leadership
 end
 
 Assignment.create(novel_assignments) do |asg|
   asg.course = novel
+end
+
+Assignment.create(lit_assignments) do |asg|
+  asg.course = lit
 end
