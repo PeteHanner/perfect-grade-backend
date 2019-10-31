@@ -1,6 +1,5 @@
 class AssignmentsController < ApplicationController
   def index
-    assignments = Assignment.ordered
-    render json: assignments
+    render json: Assignment.date_grouped
   end
 end

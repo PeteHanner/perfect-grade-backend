@@ -1,18 +1,29 @@
+# frozen_string_literal: true
+
 class Assignment < ApplicationRecord
   belongs_to :course
-  delegate :user, :to => :course, :allow_nil => false
+  delegate :user, to: :course, allow_nil: false
 
-  def self.user_assgs(user_id)
-    # rewrite this once user auth is ready
-    self.all.find_all { |a| a.course.user.id == 1 }
+  def self.user_assgs(_user_id)
+    all.filter { |a| a.user.id == 1 }
   end
 
   def self.ordered
-    byebug
-    self.user_assgs(1).order(og_date: :desc)
+    user_assgs(1).sort_by(&:adj_date).reverse
   end
 
   def self.date_grouped
-    flat_list = self.ordered
+    flat_list = ordered
+    grouped_list = {}
+    flat_list.map do |a|
+      if grouped_list[a.adj_date]
+        grouped_list[a.adj_date] << a.slice(:description, :og_date, :adj_date, :course_id)
+      else
+        grouped_list[a.adj_date] = []
+        grouped_list[a.adj_date] << a.slice(:description, :og_date, :adj_date, :course_id)
+      end
+    end
+
+    grouped_list
   end
 end
