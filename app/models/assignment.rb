@@ -2,18 +2,20 @@
 
 class Assignment < ApplicationRecord
   belongs_to :course
-  delegate :user, to: :course, allow_nil: false
+  # delegate :user, to: :course, allow_nil: false
 
   # find all assignments for active user
   # # TODO: personalize once skateboard is up & auth implemented
   def self.user_asgmts(user_id)
-    return all.filter { |a| a.user.id == 1 }
+    current_user = User.find(1)
+    return current_user.assignments
   end
 
   # get all user assignments in date order starting from back
   # # TODO: make this more flexible once the algorithm is working
   #         (so this method can be used before & after flattening)
   def self.ordered(asgmt_arr)
+    # byebug
     return asgmt_arr.sort_by(&:adj_date).reverse
   end
 
@@ -44,7 +46,7 @@ class Assignment < ApplicationRecord
 
   def self.no_empty_days
     avg = avg_per_day(user_asgmts(1))
-    schedule = date_grouped
+    schedule = self.date_grouped
 
     # first, spread into empty days
     #   √check if prev_day is empty
@@ -66,34 +68,50 @@ class Assignment < ApplicationRecord
     schedule.each do |active_day, asgmts|
       # active_day -> day being looped over right now
       # asgmts -> array of hashes, each hash an asgmt object
-      empty_days = []
 
       # fill array with all empty days before active day
       prev_day = (active_day - 1)
-      while !schedule[prev_day]
+      empty_days = []
+      until schedule[prev_day] || prev_day == schedule.keys[-1] do
+        # if prev_day == '2018-08-30'.to_date
+        #   byebug
+        # end
         empty_days << prev_day
         prev_day = (prev_day - 1)
       end
 
-      # if more empty days than asgmts, spread them back 1 per day
-      if empty_days.length >= asgmts.length
-        for i in 0...asgmts.length
-          asgmts[i][adj_date] = empty_days[i]
-          i+= 1
-        end
-      # otherwise, spread asgmts (roughly) evenly across empty days
-      else
-        asgmts_left = asgmts.length
-        move_ctr = 0
-        stop_ctr = 0
-        while asgmts_left > stop_ctr && move_ctr < asgmts.length
-          for i in 0..empty_days.length
-
+      # break if no empty days to fill
+      if empty_days.length > 0
+        puts "There are empty days to backfill:"
+        # if more empty days than asgmts, spread them back 1 per day
+        if empty_days.length >= asgmts.length
+          i = 0
+          while i < asgmts.length
+            puts "Inside the while loop for more empty days than asgmts"
+            asgmts[i]['adj_date'] = empty_days[i]
+            i += 1
+          end
+        else
+          puts "Inside the future while loop for asgmt spreading"
+          # spread asgmts (roughly) evenly across empty days
+          asgmts_left = asgmts.length
+          stop_ctr = 0
+          move_ctr = 0
+          while asgmts_left > stop_ctr && move_ctr < asgmts.length
+            i = 0
+            while i < empty_days.length
+              # byebug
+              asgmts[i]['adj_date'] = empty_days[i]
+              move_ctr += 1
+              asgmts_left -= 1
+              i += 1
+            end
+            stop_ctr += 1
           end
         end
       end
     end
-
+    puts "Exiting the each loop for the date-grouped schedule"
     return schedule
   end
 
@@ -102,7 +120,7 @@ class Assignment < ApplicationRecord
     # once all days have something, spread those out evenly as possible
 
     # self.ordered(user_asgmts(1))
-    self.date_grouped
-    # self.no_empty_days
+    # self.date_grouped
+    self.no_empty_days
   end
 end
