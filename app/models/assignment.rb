@@ -43,19 +43,20 @@ class Assignment < ApplicationRecord
   end
 
   def self.no_empty_days
-    # active_day = first schedule hash entry (last day with assignments)
-    # prev_day = active day - 1
     avg = avg_per_day(user_asgmts(1))
     schedule = date_grouped
 
     # first, spread into empty days
-    #   check if prev_day is empty
+    #   √check if prev_day is empty
     #     √ if not, prev_day becomes active_day and new prev_day is one before that
     #     √ if it IS empty, add it to working array
-    #     √ keep looking back days and add them to the working array until you hit a non-empty day
-    #     while active_day asgmts > avg AND active_day asgmts >
-    #       move an asgmt from active_day to each day in working array, earliest -> latest
-    #       if every day gets an asgmt & asgmts remain, do the above loop till you run out
+    #     √ keep looking back and add days to working array until you hit a non-empty day
+    #     if empty days >= asgmts:
+    #       √ move one asgmt from active_day to each of the empty days, starting earliest
+    #     otherwise:
+    #       while og day asgmts > prev day asgmts && # of moves < total asgmts to be moved
+    #         move asgmts back starting earliest
+
     #     once this chunk has been spread out:
     #       active_day = day before earliest in working array
     #       prev_day = active_day - 1
@@ -74,24 +75,34 @@ class Assignment < ApplicationRecord
         prev_day = (prev_day - 1)
       end
 
-      # create hash keys for each of the entry days
-      # note this is just so the while-loop logic below works
-      # the actual date adjustment takes place on the adj_date value
-      empty_days.each do |day|
+      # if more empty days than asgmts, spread them back 1 per day
+      if empty_days.length >= asgmts.length
+        for i in 0...asgmts.length
+          asgmts[i][adj_date] = empty_days[i]
+          i+= 1
+        end
+      # otherwise, spread asgmts (roughly) evenly across empty days
+      else
+        asgmts_left = asgmts.length
+        move_ctr = 0
+        stop_ctr = 0
+        while asgmts_left > stop_ctr && move_ctr < asgmts.length
+          for i in 0..empty_days.length
 
-      end
-
-      while asgmts > avg && asgmts
-
+          end
+        end
       end
     end
+
+    return schedule
   end
 
   # THE sorting algorithm to spread out assignments
   def self.flattened
     # once all days have something, spread those out evenly as possible
 
-    self.ordered(user_asgmts(1))
+    # self.ordered(user_asgmts(1))
     self.date_grouped
+    # self.no_empty_days
   end
 end
