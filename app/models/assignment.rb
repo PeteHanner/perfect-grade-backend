@@ -13,7 +13,7 @@ class Assignment < ApplicationRecord
 
   # get all user assignments in date order starting from back
   # # TODO: make this more flexible once the algorithm is working
-  #         (so this method can be used before & after flattening)
+  # (so this method can be used before & after flattening)
   def self.ordered(asgmt_arr)
     # byebug
     return asgmt_arr.sort_by(&:adj_date).reverse
@@ -70,14 +70,16 @@ class Assignment < ApplicationRecord
       # asgmts -> array of hashes, each hash an asgmt object
 
       # fill array with all empty days before active day
+      # # TODO: THIS LOGIC DON'T WORK
       prev_day = (active_day - 1)
       empty_days = []
-      until schedule[prev_day] || prev_day == schedule.keys[-1] do
-        # if prev_day == '2018-08-30'.to_date
+      until schedule[prev_day] || active_day == schedule.keys[-1] do
+        # if prev_day.to_date == '2018-08-29'.to_date
         #   byebug
         # end
         empty_days << prev_day
         prev_day = (prev_day - 1)
+        puts "Checking for empty days"
       end
 
       # break if no empty days to fill
@@ -91,8 +93,9 @@ class Assignment < ApplicationRecord
             asgmts[i]['adj_date'] = empty_days[i]
             i += 1
           end
+          puts "Done spreading asgmts across many days"
         else
-          puts "Inside the future while loop for asgmt spreading"
+          puts "Inside the while loop for asgmt spreading"
           # spread asgmts (roughly) evenly across empty days
           asgmts_left = asgmts.length
           stop_ctr = 0
@@ -109,8 +112,11 @@ class Assignment < ApplicationRecord
             stop_ctr += 1
           end
         end
+        puts "Done handling a chunk of empty days"
       end
+      puts "Moving on to the next day with assignments"
     end
+
     puts "Exiting the each loop for the date-grouped schedule"
     return schedule
   end
