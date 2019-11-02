@@ -6,9 +6,9 @@ class Assignment < ApplicationRecord
 
   # find all assignments for active user
   # # TODO: personalize once skateboard is up & auth implemented
-  def self.user_asgmts(user_id)
+  def self.user_asgmts(_user_id)
     current_user = User.find(1)
-    return current_user.assignments
+    current_user.assignments
   end
 
   # get all user assignments in date order starting from back
@@ -16,13 +16,13 @@ class Assignment < ApplicationRecord
   # (so this method can be used before & after flattening)
   def self.ordered(asgmt_arr)
     # byebug
-    return asgmt_arr.sort_by(&:adj_date).reverse
+    asgmt_arr.sort_by(&:adj_date).reverse
   end
 
   # create hash to store arrays of date-grouped assignments
   # # TODO: syllabi list due date, so push all dates back by one for 'work' date
   def self.date_grouped(asgmt_arr)
-    flat_list = self.ordered(asgmt_arr)
+    flat_list = ordered(asgmt_arr)
     grouped_list = {}
     flat_list.each do |a|
       if grouped_list[a.adj_date]
@@ -32,82 +32,33 @@ class Assignment < ApplicationRecord
         grouped_list[a.adj_date] << a
       end
     end
-    return grouped_list
+    grouped_list
   end
 
   # calculate average number of assignments per day, rounding up
-  def self.avg_per_day(asgmt_arr)
-    assignment_count = self.ordered(user_asgmts(1)).length
-    first_day = self.ordered(user_asgmts(1)).last.og_date
-    last_day = self.ordered(user_asgmts(1)).first.og_date
+  def self.avg_per_day(_asgmt_arr)
+    assignment_count = ordered(user_asgmts(1)).length
+    first_day = ordered(user_asgmts(1)).last.og_date
+    last_day = ordered(user_asgmts(1)).first.og_date
     semester_length = (last_day - first_day).to_i
     (assignment_count.to_f / semester_length.to_f).ceil
   end
 
   def self.no_empty_days
-    avg = avg_per_day(self.user_asgmts(1))
-    schedule = self.date_grouped(self.user_asgmts(1))
-
-    # first, spread into empty days
-    #   √check if prev_day is empty
-    #     √ if not, prev_day becomes active_day and new prev_day is one before that
-    #     √ if it IS empty, add it to working array
-    #     √ keep looking back and add days to working array until you hit a non-empty day
-    #     if empty days >= asgmts:
-    #       √ move one asgmt from active_day to each of the empty days, starting earliest
-    #     otherwise:
-    #       while og day asgmts > prev day asgmts && # of moves < total asgmts to be moved
-    #         move asgmts back starting earliest
-
-    #     once this chunk has been spread out:
-    #       active_day = day before earliest in working array
-    #       prev_day = active_day - 1
-    #       clear out working array
-    #       go back to the top of this whole loop
-
-    schedule.each do |active_day, asgmts|
-      # active_day -> day being looped over right now
-      # asgmts -> array of hashes, each hash an asgmt object
-
-      # fill array with all empty days before active day
-      # # TODO: THIS LOGIC DON'T WORK
-      prev_day = (active_day - 1)
-      empty_days = []
-      until schedule[prev_day] || active_day == schedule.keys[-1] do
-        empty_days << prev_day
-        prev_day = (prev_day - 1)
-      end
-
-      # break if no empty days to fill
-      if empty_days.length > 0
-        # if more empty days than asgmts, spread them back 1 per day
-        if empty_days.length >= asgmts.length
-          i = 0
-          while i < asgmts.length
-            asgmts[i][:adj_date] = empty_days[i]
-            i += 1
-          end
-        else
-          # spread asgmts (roughly) evenly across empty days
-          asgmts_left = asgmts.length
-          stop_ctr = 0
-          move_ctr = 0
-          while asgmts_left > stop_ctr && move_ctr < asgmts.length
-            i = 0
-            while i < empty_days.length
-              # byebug
-              asgmts[i][:adj_date] = empty_days[i]
-              move_ctr += 1
-              asgmts_left -= 1
-              i += 1
-            end
-            stop_ctr += 1
-          end
-        end
-      end
-    end
-
-    return self.user_asgmts(1)
+    # NO EMPTY DAYS FORMULA:
+    # find first empty day in the semester
+    # place in working array
+    # check next day
+    #   if empty/nonexistent, add to working array
+    #   repeat until you find a day with asgmt(s)
+    #     if empty days >= # of asgmts:
+    #       move 1 asgmt to each empty day starting earliest until none left
+    #     if empty day < # of asgmts:
+    #       while current og day asgmts > prev day asgmts && # of moves < total asgmts
+    #         move one asgmt back to each day earliest -> latest
+    #         start with earliest day again once last empty day is reached
+    #   find next empty day in semester and repeat all of the above
+    #   keep going until you hit last day of semester
   end
 
   # THE sorting algorithm to spread out assignments
@@ -118,7 +69,7 @@ class Assignment < ApplicationRecord
   def self.test_output
     # self.ordered(user_asgmts(1))
     # self.date_grouped(user_asgmts(1))
-    self.date_grouped(self.no_empty_days)
+    date_grouped(no_empty_days)
   end
 
   # may use or not use this in actuality; does need to be applied somewhere
