@@ -21,15 +21,15 @@ class Assignment < ApplicationRecord
 
   # create hash to store arrays of date-grouped assignments
   # # TODO: syllabi list due date, so push all dates back by one for 'work' date
-  def self.date_grouped
-    flat_list = self.ordered(user_asgmts(1))
+  def self.date_grouped(asgmt_arr)
+    flat_list = self.ordered(asgmt_arr)
     grouped_list = {}
     flat_list.each do |a|
       if grouped_list[a.adj_date]
-        grouped_list[a.adj_date] << a.slice(:description, :og_date, :adj_date, :course_id)
+        grouped_list[a.adj_date] << a
       else
         grouped_list[a.adj_date] = []
-        grouped_list[a.adj_date] << a.slice(:description, :og_date, :adj_date, :course_id)
+        grouped_list[a.adj_date] << a
       end
     end
     return grouped_list
@@ -45,8 +45,8 @@ class Assignment < ApplicationRecord
   end
 
   def self.no_empty_days
-    avg = avg_per_day(user_asgmts(1))
-    schedule = self.date_grouped
+    avg = avg_per_day(self.user_asgmts(1))
+    schedule = self.date_grouped(self.user_asgmts(1))
 
     # first, spread into empty days
     #   √check if prev_day is empty
@@ -74,28 +74,20 @@ class Assignment < ApplicationRecord
       prev_day = (active_day - 1)
       empty_days = []
       until schedule[prev_day] || active_day == schedule.keys[-1] do
-        # if prev_day.to_date == '2018-08-29'.to_date
-        #   byebug
-        # end
         empty_days << prev_day
         prev_day = (prev_day - 1)
-        puts "Checking for empty days"
       end
 
       # break if no empty days to fill
       if empty_days.length > 0
-        puts "There are empty days to backfill:"
         # if more empty days than asgmts, spread them back 1 per day
         if empty_days.length >= asgmts.length
           i = 0
           while i < asgmts.length
-            puts "Inside the while loop for more empty days than asgmts"
-            asgmts[i]['adj_date'] = empty_days[i]
+            asgmts[i][:adj_date] = empty_days[i]
             i += 1
           end
-          puts "Done spreading asgmts across many days"
         else
-          puts "Inside the while loop for asgmt spreading"
           # spread asgmts (roughly) evenly across empty days
           asgmts_left = asgmts.length
           stop_ctr = 0
@@ -104,7 +96,7 @@ class Assignment < ApplicationRecord
             i = 0
             while i < empty_days.length
               # byebug
-              asgmts[i]['adj_date'] = empty_days[i]
+              asgmts[i][:adj_date] = empty_days[i]
               move_ctr += 1
               asgmts_left -= 1
               i += 1
@@ -112,21 +104,26 @@ class Assignment < ApplicationRecord
             stop_ctr += 1
           end
         end
-        puts "Done handling a chunk of empty days"
       end
-      puts "Moving on to the next day with assignments"
     end
 
-    puts "Exiting the each loop for the date-grouped schedule"
-    return schedule
+    return self.user_asgmts(1)
   end
 
   # THE sorting algorithm to spread out assignments
   def self.flattened
     # once all days have something, spread those out evenly as possible
+  end
 
+  def self.test_output
     # self.ordered(user_asgmts(1))
-    # self.date_grouped
-    self.no_empty_days
+    # self.date_grouped(user_asgmts(1))
+    self.date_grouped(self.no_empty_days)
+  end
+
+  # may use or not use this in actuality; does need to be applied somewhere
+  # to filter JSON
+  def serializer
+    asgmt.slice(:description, :og_date, :adj_date, :course_id)
   end
 end
