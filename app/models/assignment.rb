@@ -15,7 +15,6 @@ class Assignment < ApplicationRecord
   # # TODO: make this more flexible once the algorithm is working
   # (so this method can be used before & after flattening)
   def self.ordered(asgmt_arr)
-    # byebug
     return asgmt_arr.sort_by(&:adj_date).reverse
   end
 
@@ -71,43 +70,40 @@ class Assignment < ApplicationRecord
 
       # fill array with all empty days before active day
       # # TODO: THIS LOGIC DON'T WORK
-      prev_day = (active_day - 1)
       empty_days = []
+      prev_day = (active_day - 1)
       until schedule[prev_day] || active_day == schedule.keys[-1] do
         empty_days << prev_day
         prev_day = (prev_day - 1)
       end
+      empty_days = empty_days.reverse
 
-      # break if no empty days to fill
-      if empty_days.length > 0
-        # if more empty days than asgmts, spread them back 1 per day
-        if empty_days.length >= asgmts.length
-          i = 0
-          while i < asgmts.length
-            asgmts[i][:adj_date] = empty_days[i]
+      i = 0
+      # if more empty days than asgmts, spread them back 1 per day
+      if empty_days.length >= asgmts.length
+        while i < asgmts.length
+          asgmts[i]['adj_date'] = empty_days[i]
+          i += 1
+        end
+      else
+        # spread asgmts (roughly) evenly across empty days
+        asgmts_left = asgmts.length
+        stop_ctr = 0
+        move_ctr = 0
+        while asgmts_left > stop_ctr && move_ctr < asgmts.length
+          while i < empty_days.length
+            asgmts[i]['adj_date'] = empty_days[i]
+            move_ctr += 1
+            asgmts_left -= 1
             i += 1
           end
-        else
-          # spread asgmts (roughly) evenly across empty days
-          asgmts_left = asgmts.length
-          stop_ctr = 0
-          move_ctr = 0
-          while asgmts_left > stop_ctr && move_ctr < asgmts.length
-            i = 0
-            while i < empty_days.length
-              # byebug
-              asgmts[i][:adj_date] = empty_days[i]
-              move_ctr += 1
-              asgmts_left -= 1
-              i += 1
-            end
-            stop_ctr += 1
-          end
+          stop_ctr += 1
         end
       end
     end
 
-    return self.user_asgmts(1)
+    # return self.ordered(schedule.values.flatten)
+    return schedule
   end
 
   # THE sorting algorithm to spread out assignments
@@ -118,7 +114,8 @@ class Assignment < ApplicationRecord
   def self.test_output
     # self.ordered(user_asgmts(1))
     # self.date_grouped(user_asgmts(1))
-    self.date_grouped(self.no_empty_days)
+    # self.date_grouped(self.no_empty_days)
+    self.no_empty_days
   end
 
   # may use or not use this in actuality; does need to be applied somewhere
