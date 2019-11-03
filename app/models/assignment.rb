@@ -43,7 +43,7 @@ class Assignment < ApplicationRecord
     return (assignment_count.to_f / semester_length.to_f).ceil
   end
 
-  def self.no_empty_days
+  def self.no_empty_days()
     # √ find first empty day in the semester
     # √ place in working array
     # √ check next day
@@ -60,9 +60,10 @@ class Assignment < ApplicationRecord
 
     schedule = self.date_grouped(self.user_asgmts(1))
     check_day = schedule.keys.first + 1
+    last_day = schedule.keys.last + 1
 
     # outer loop - go through the entire semester
-    until check_day == schedule.keys.last + 1
+    until check_day == last_day
       # reset empty days array for refill
       empty_days = []
       until schedule[check_day] && schedule[check_day].length > 0
@@ -72,28 +73,38 @@ class Assignment < ApplicationRecord
 
       # backfill empty days
       if empty_days.length >= schedule[check_day].length
-        puts "There are more empty days than assignments"
+        puts "There are more empty days than assignments on #{check_day}"
         # need a way to set check_day to the next empty day
+        i = 0
+        while i < schedule[check_day].length
+          schedule[empty_days[i]] = []
+          schedule[check_day][i].adj_date = empty_days[i]
+          schedule[empty_days[i]] << schedule[check_day].shift
+          i += 1
+        end
+        check_day == last_day - 1 ? nil : check_day = empty_days[i - 1]
+        puts check_day
       else
-        puts "Surplus assignments need to be spread out evenly"
+        puts "Surplus assignments need to be spread out evenly on #{check_day}"
       end
 
       # clear empty days array and start looking for next schedule gap
       empty_days = []
       check_day += 1
     end
+    return (schedule)
   end
 
   # THE sorting algorithm to spread out assignments
-  def self.flattened
+  def self.flattened()
     # once all days have something, spread those out evenly as possible
   end
 
-  def self.test_output
+  def self.test_output()
     # self.ordered(user_asgmts(1))
     # self.date_grouped(user_asgmts(1))
     # date_grouped(no_empty_days)
-    self.no_empty_days
+    self.no_empty_days()
   end
 
   # may use or not use this in actuality; does need to be applied somewhere to filter JSON
