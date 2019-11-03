@@ -44,11 +44,11 @@ class Assignment < ApplicationRecord
   end
 
   def self.no_empty_days
-    # find first empty day in the semester
-    # place in working array
-    # check next day
-    #   if empty/nonexistent, add to working array
-    #   repeat until you find a day with asgmt(s)
+    # √ find first empty day in the semester
+    # √ place in working array
+    # √ check next day
+    #   √ if empty/nonexistent, add to working array
+    #   √ repeat until you find a day with asgmt(s)
     #     if empty days >= # of asgmts:
     #       move 1 asgmt to each empty day starting earliest until none left
     #     if empty day < # of asgmts:
@@ -56,18 +56,31 @@ class Assignment < ApplicationRecord
     #         move one asgmt back to each day earliest -> latest
     #         start with earliest day again once last empty day is reached
     #   find next empty day in semester and repeat all of the above
-    #   keep going until you hit last day of semester
+    #   √ keep going until you hit last day of semester
+
     schedule = self.date_grouped(self.user_asgmts(1))
-    empty_days = []
     check_day = schedule.keys.first + 1
+
+    # outer loop - go through the entire semester
     until check_day == schedule.keys.last + 1
-      if schedule[check_day] && schedule[check_day].length > 0
-        puts "There are #{schedule[check_day].length} assignments on #{check_day}"
-        check_day += 1
-      else
-        puts "There are no assignments on #{check_day}"
+      # reset empty days array for refill
+      empty_days = []
+      until schedule[check_day] && schedule[check_day].length > 0
+        empty_days << check_day
         check_day += 1
       end
+
+      # backfill empty days
+      if empty_days.length >= schedule[check_day].length
+        puts "There are more empty days than assignments"
+        # need a way to set check_day to the next empty day
+      else
+        puts "Surplus assignments need to be spread out evenly"
+      end
+
+      # clear empty days array and start looking for next schedule gap
+      empty_days = []
+      check_day += 1
     end
   end
 
