@@ -44,20 +44,6 @@ class Assignment < ApplicationRecord
   end
 
   def self.no_empty_days()
-    # √ find first empty day in the semester
-    # √ place in working array
-    # √ check next day
-    #   √ if empty/nonexistent, add to working array
-    #   √ repeat until you find a day with asgmt(s)
-    #     √ if empty days >= # of asgmts:
-    #       √ move 1 asgmt to each empty day starting earliest until none left
-    #     if empty day < # of asgmts:
-    #       while current og day asgmts > prev day asgmts && # of moves < total asgmts
-    #         move one asgmt back to each day earliest -> latest
-    #         start with earliest day again once last empty day is reached
-    #   find next empty day in semester and repeat all of the above
-    #   √ keep going until you hit last day of semester
-
     schedule = self.date_grouped(self.user_asgmts(1))
     check_day = schedule.keys.first + 1
     last_day = schedule.keys.last + 1
@@ -84,17 +70,26 @@ class Assignment < ApplicationRecord
         check_day == last_day - 1 ? nil : check_day = empty_days[0] - 2
       else
         # if asgmts outnumber empty days, spread them out roughly evenly
-        move_ctr = 0
-        stop_ctr = 0
-        total_asgmts = schedule[check_day].length
+        # set up empty days to avoid overwriting later
+        empty_days.each { |day| schedule[day] = [] }
         # 1 asgmt from og day to each empty day
         # loop back to beginning of empty days when you hit the end
-        #
-        while schedule[check_day].length > schedule[check_day - 1].length && move_ctr < total_asgmts
+        # stop once og day asgmts = # of loops made + 1
+        ## move_ctr = 0
+        stop_ctr = 1
+        ## total_asgmts = schedule[check_day].length
+        while schedule[check_day].length >= stop_ctr #&& move_ctr < total_asgmts
           i = 0
-          while i < empty_days.length
+          back_day = -1
+          while i < empty_days.length && schedule[check_day].length >= stop_ctr
+            puts check_day
 
+            schedule[check_day][0].adj_date = empty_days[back_day]
+            schedule[empty_days[back_day]] << schedule[check_day].shift
+            back_day -= 1
+            i += 1
           end
+          stop_ctr += 1
         end
       end
 
