@@ -67,7 +67,6 @@ class Assignment < ApplicationRecord
         end
         check_day == last_day - 1 ? nil : check_day = empty_days[0] - 2
       elsif empty_days[0]
-        puts "Spreading asgmts out evenly from #{check_day} back through #{empty_days[0]}"
         # if asgmts outnumber empty days, spread them out roughly evenly
         # set up empty days to avoid overwriting later
         empty_days.each { |day| schedule[day] = [] }
@@ -111,15 +110,24 @@ class Assignment < ApplicationRecord
       end
       check_day -= 1
     end
-    return schedule
+    return schedule.values.flatten
+  end
+
+  def self.overwrite()
+    flattened = self.flattened()
+    flattened.each do |asgmt|
+      Assignment.find(asgmt.id).update(adj_date: asgmt.adj_date)
+    end
   end
 
   def self.test_output()
     # self.avg_per_day(user_asgmts(1))
-    # self.ordered(user_asgmts(1))
+    self.overwrite()
+    self.ordered(user_asgmts(1))
     # self.date_grouped(user_asgmts(1))
     # self.no_empty_days()
-    self.flattened()
+    # puts self.user_asgmts(1).length
+    # self.overwrite(1)
   end
 
   # may use or not use this in actuality; does need to be applied somewhere to filter JSON
