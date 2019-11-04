@@ -5,7 +5,7 @@ class Assignment < ApplicationRecord
   # find all assignments for active user
   # # TODO: personalize once skateboard is up & auth implemented
   def self.user_asgmts(user_id)
-    current_user = User.find(1)
+    current_user = User.find(user_id)
     return current_user.assignments
   end
 
@@ -33,11 +33,11 @@ class Assignment < ApplicationRecord
   end
 
   # calculate average number of assignments per day, rounding up
-  def self.avg_per_day(_asgmt_arr)
-    assignment_count = self.ordered(user_asgmts(1)).length
+  def self.avg_per_day(asgmt_arr)
+    assignment_count = user_asgmts(1).length
     first_day = self.ordered(user_asgmts(1)).last.og_date
     last_day = self.ordered(user_asgmts(1)).first.og_date
-    semester_length = (last_day - first_day).to_i
+    semester_length = (first_day - last_day).to_i
     return (assignment_count.to_f / semester_length.to_f).ceil
   end
 
@@ -95,14 +95,31 @@ class Assignment < ApplicationRecord
   end
 
   # THE sorting algorithm to spread out assignments
+  # once all days have something, spread those out evenly as possible
   def self.flattened()
-    # once all days have something, spread those out evenly as possible
+    schedule = self.no_empty_days().reverse_each.to_h
+    avg = self.avg_per_day(user_asgmts(1))
+    check_day = schedule.keys.first
+
+    until check_day == schedule.keys.last
+      if schedule[check_day].length > avg
+        prev_day = check_day - 1
+        while schedule[check_day].length > avg
+          schedule[check_day][0].adj_date = prev_day
+          schedule[prev_day] << schedule[check_day].shift
+        end
+      end
+      check_day -= 1
+    end
+    return schedule
   end
 
   def self.test_output()
+    # self.avg_per_day(user_asgmts(1))
     # self.ordered(user_asgmts(1))
     # self.date_grouped(user_asgmts(1))
-    self.no_empty_days()
+    # self.no_empty_days()
+    self.flattened()
   end
 
   # may use or not use this in actuality; does need to be applied somewhere to filter JSON
