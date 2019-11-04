@@ -49,8 +49,8 @@ class Assignment < ApplicationRecord
     # √ check next day
     #   √ if empty/nonexistent, add to working array
     #   √ repeat until you find a day with asgmt(s)
-    #     if empty days >= # of asgmts:
-    #       move 1 asgmt to each empty day starting earliest until none left
+    #     √ if empty days >= # of asgmts:
+    #       √ move 1 asgmt to each empty day starting earliest until none left
     #     if empty day < # of asgmts:
     #       while current og day asgmts > prev day asgmts && # of moves < total asgmts
     #         move one asgmt back to each day earliest -> latest
@@ -73,26 +73,36 @@ class Assignment < ApplicationRecord
 
       # backfill empty days
       if empty_days.length >= schedule[check_day].length
-        puts "There are more empty days than assignments on #{check_day}"
-        # need a way to set check_day to the next empty day
+        # if empty days outnumber asgmts, move them back 1/day as far as possible
         i = 0
         while i < schedule[check_day].length
           schedule[empty_days[i]] = []
-          schedule[check_day][i].adj_date = empty_days[i]
+          schedule[check_day][0].adj_date = empty_days[i]
           schedule[empty_days[i]] << schedule[check_day].shift
           i += 1
         end
-        check_day == last_day - 1 ? nil : check_day = empty_days[i - 1]
-        puts check_day
+        check_day == last_day - 1 ? nil : check_day = empty_days[0] - 2
       else
-        puts "Surplus assignments need to be spread out evenly on #{check_day}"
+        # if asgmts outnumber empty days, spread them out roughly evenly
+        move_ctr = 0
+        stop_ctr = 0
+        total_asgmts = schedule[check_day].length
+        # 1 asgmt from og day to each empty day
+        # loop back to beginning of empty days when you hit the end
+        #
+        while schedule[check_day].length > schedule[check_day - 1].length && move_ctr < total_asgmts
+          i = 0
+          while i < empty_days.length
+
+          end
+        end
       end
 
-      # clear empty days array and start looking for next schedule gap
-      empty_days = []
+      # start looking for next schedule gap
       check_day += 1
     end
-    return (schedule)
+
+    return schedule.sort.to_h
   end
 
   # THE sorting algorithm to spread out assignments
@@ -103,7 +113,6 @@ class Assignment < ApplicationRecord
   def self.test_output()
     # self.ordered(user_asgmts(1))
     # self.date_grouped(user_asgmts(1))
-    # date_grouped(no_empty_days)
     self.no_empty_days()
   end
 
