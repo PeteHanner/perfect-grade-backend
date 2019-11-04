@@ -110,19 +110,13 @@ class Assignment < ApplicationRecord
       end
       check_day -= 1
     end
-    return schedule.values.flatten
-  end
-
-  def self.overwrite()
-    flattened = self.flattened()
-    flattened.each do |asgmt|
+    return schedule.values.flatten.each do |asgmt|
       Assignment.find(asgmt.id).update(adj_date: asgmt.adj_date)
     end
   end
 
   def self.test_output()
     # self.avg_per_day(user_asgmts(1))
-    self.overwrite()
     self.ordered(user_asgmts(1))
     # self.date_grouped(user_asgmts(1))
     # self.no_empty_days()
