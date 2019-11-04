@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Assignment < ApplicationRecord
   belongs_to :course
   # delegate :user, to: :course, allow_nil: false
@@ -68,22 +66,19 @@ class Assignment < ApplicationRecord
           i += 1
         end
         check_day == last_day - 1 ? nil : check_day = empty_days[0] - 2
-      else
+      elsif empty_days[0]
+        puts "Spreading asgmts out evenly from #{check_day} back through #{empty_days[0]}"
         # if asgmts outnumber empty days, spread them out roughly evenly
         # set up empty days to avoid overwriting later
         empty_days.each { |day| schedule[day] = [] }
         # 1 asgmt from og day to each empty day
         # loop back to beginning of empty days when you hit the end
         # stop once og day asgmts = # of loops made + 1
-        ## move_ctr = 0
         stop_ctr = 1
-        ## total_asgmts = schedule[check_day].length
-        while schedule[check_day].length >= stop_ctr #&& move_ctr < total_asgmts
+        while schedule[check_day].length > stop_ctr
           i = 0
           back_day = -1
-          while i < empty_days.length && schedule[check_day].length >= stop_ctr
-            puts check_day
-
+          while i < empty_days.length && schedule[check_day].length > stop_ctr
             schedule[check_day][0].adj_date = empty_days[back_day]
             schedule[empty_days[back_day]] << schedule[check_day].shift
             back_day -= 1
@@ -92,7 +87,6 @@ class Assignment < ApplicationRecord
           stop_ctr += 1
         end
       end
-
       # start looking for next schedule gap
       check_day += 1
     end
