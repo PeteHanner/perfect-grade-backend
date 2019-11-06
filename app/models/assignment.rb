@@ -16,6 +16,16 @@ class Assignment < ApplicationRecord
     return asgmt_arr.sort_by(&:adj_date)
   end
 
+  def serialized
+    {
+      id: self.id,
+      description: self.description,
+      og_date: self.og_date,
+      adj_date: self.adj_date,
+      course_id: self.course_id
+    }
+  end
+
   # create hash to store arrays of date-grouped assignments
   # # TODO: syllabi list due date, so push all dates back by one for 'work' date
   def self.date_grouped(asgmt_arr)
@@ -23,10 +33,10 @@ class Assignment < ApplicationRecord
     grouped_list = {}
     flat_list.each do |a|
       if grouped_list[a.adj_date]
-        grouped_list[a.adj_date] << a
+        grouped_list[a.adj_date] << a.serialized
       else
         grouped_list[a.adj_date] = []
-        grouped_list[a.adj_date] << a
+        grouped_list[a.adj_date] << a.serialized
       end
     end
     return grouped_list
@@ -111,18 +121,18 @@ class Assignment < ApplicationRecord
       check_day -= 1
     end
     return schedule.values.flatten.each do |asgmt|
-      Assignment.find(asgmt.id).update(adj_date: asgmt.adj_date)
+      Assignment.find(asgmt[:id]).update(adj_date: asgmt[:adj_date])
     end
   end
 
   def self.final_adjusted_schedule
-    adj = self.date_grouped(self.flattened).transform_values do |asgmts|
-      asgmts.map do |a|
-        a.slice(:description, :og_date, :adj_date, :course_id)
-      end
-    end
+    # adj = self.date_grouped(self.flattened).transform_values do |asgmts|
+    #   asgmts.map do |a|
+    #     a.slice(:description, :og_date, :adj_date, :course_id)
+    #   end
+    # end
 
-    adj.transform_keys do |date|
+    self.date_grouped(self.flattened).transform_keys do |date|
       date - 1
     end
     # adj.slice(:description, :og_date, :adj_date, :course_id)

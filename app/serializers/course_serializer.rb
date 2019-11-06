@@ -2,6 +2,7 @@ class CourseSerializer < ActiveModel::Serializer
   attributes :id, :name, :assignments
 
   def assignments
+
     self.object.assignments.map do |asg|
       {
         description: asg.description,
