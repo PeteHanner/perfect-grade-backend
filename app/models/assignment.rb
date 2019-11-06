@@ -12,31 +12,31 @@ class Assignment < ApplicationRecord
   # get all user assignments in date order starting from back
   # # TODO: make this more flexible once the algorithm is working
   # (so this method can be used before & after flattening)
-  def self.ordered(asgmt_arr)
-    return asgmt_arr.sort_by(&:adj_date)
+  def self.ordered(asgmts)
+    return asgmts.sort_by(&:adj_date)
   end
 
-  def serialized
-    {
-      id: self.id,
-      description: self.description,
-      og_date: self.og_date,
-      adj_date: self.adj_date,
-      course_id: self.course_id
-    }
-  end
 
   # create hash to store arrays of date-grouped assignments
   # # TODO: syllabi list due date, so push all dates back by one for 'work' date
   def self.date_grouped(asgmt_arr)
-    flat_list = self.ordered(asgmt_arr)
+    # flat_list = self.ordered(asgmt_arr)
     grouped_list = {}
-    flat_list.each do |a|
+    assgmt_arr.each do |a|
+
+      a_data = {
+        id: a[:id],
+        description: a[:description],
+        og_date: a[:og_date],
+        adj_date: a[:adj_date],
+        course_id: a[:course_id]
+      }
+
       if grouped_list[a.adj_date]
-        grouped_list[a.adj_date] << a.serialized
+        grouped_list[a.adj_date] << a_data
       else
         grouped_list[a.adj_date] = []
-        grouped_list[a.adj_date] << a.serialized
+        grouped_list[a.adj_date] << a_data
       end
     end
     return grouped_list
@@ -52,7 +52,7 @@ class Assignment < ApplicationRecord
   end
 
   def self.no_empty_days()
-    schedule = self.date_grouped(self.user_asgmts(1))
+    schedule = self.date_grouped(self.user_asgmts(1)).to_h
     check_day = schedule.keys.first + 1
     last_day = schedule.keys.last + 1
 
@@ -106,7 +106,7 @@ class Assignment < ApplicationRecord
   # THE sorting algorithm to spread out assignments
   # once all days have something, spread those out evenly as possible
   def self.flattened()
-    schedule = self.no_empty_days().reverse_each.to_h
+    schedule = self.no_empty_days.reverse_each.to_h
     avg = self.avg_per_day(user_asgmts(1))
     check_day = schedule.keys.first
 
