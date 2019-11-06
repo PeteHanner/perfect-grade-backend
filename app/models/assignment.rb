@@ -1,48 +1,53 @@
 class Assignment < ApplicationRecord
   belongs_to :course
-  # delegate :user, to: :course, allow_nil: false
+
+  def serialized
+    {
+      id: self.id,
+      description: self.description,
+      og_date: self.og_date,
+      adj_date: self.adj_date,
+      course_id: self.course_id
+    }
+  end
 
   # find all assignments for active user
   # # TODO: personalize once skateboard is up & auth implemented
   def self.user_asgmts(user_id)
-    current_user = User.find(user_id)
-    return current_user.assignments
+    User.find(user_id).assignments.to_a
   end
 
   # get all user assignments in date order starting from back
-  # # TODO: make this more flexible once the algorithm is working
-  # (so this method can be used before & after flattening)
   def self.ordered(asgmt_arr)
-    return asgmt_arr.sort_by(&:adj_date)
-  end
-
-  # create hash to store arrays of date-grouped assignments
-  # # TODO: syllabi list due date, so push all dates back by one for 'work' date
-  def self.date_grouped(asgmt_arr)
-    flat_list = self.ordered(asgmt_arr)
-    grouped_list = {}
-    flat_list.each do |a|
-      if grouped_list[a.adj_date]
-        grouped_list[a.adj_date] << a
-      else
-        grouped_list[a.adj_date] = []
-        grouped_list[a.adj_date] << a
-      end
-    end
-    return grouped_list
+    # asgmt_arr = asgmt_arr.to_a
+    asgmt_arr.sort_by(&:adj_date)
   end
 
   # calculate average number of assignments per day, rounding up
   def self.avg_per_day(asgmt_arr)
-    assignment_count = user_asgmts(1).length
+    assignment_count = asgmt_arr.length
     first_day = self.ordered(user_asgmts(1)).last.og_date
     last_day = self.ordered(user_asgmts(1)).first.og_date
     semester_length = (first_day - last_day).to_i
     return (assignment_count.to_f / semester_length.to_f).ceil
   end
 
-  def self.no_empty_days()
-    schedule = self.date_grouped(self.user_asgmts(1))
+  # create hash to store arrays of date-grouped assignments
+  def self.date_grouped(asgmt_arr)
+    grouped_list = {}
+    asgmt_arr.each do |a|
+      if grouped_list[a.adj_date]
+        grouped_list[a.adj_date] << a.serialized
+      else
+        grouped_list[a.adj_date] = []
+        grouped_list[a.adj_date] << a.serialized
+      end
+    end
+    return grouped_list
+  end
+
+  def self.no_empty_days(asgmt_arr)
+    schedule = self.date_grouped(asgmt_arr)
     check_day = schedule.keys.first + 1
     last_day = schedule.keys.last + 1
 
@@ -89,14 +94,13 @@ class Assignment < ApplicationRecord
       # start looking for next schedule gap
       check_day += 1
     end
-
     return schedule.sort.to_h
   end
 
   # THE sorting algorithm to spread out assignments
   # once all days have something, spread those out evenly as possible
   def self.flattened()
-    schedule = self.no_empty_days().reverse_each.to_h
+    schedule = self.no_empty_days(self.user_asgmts(1)).reverse_each.to_h
     avg = self.avg_per_day(user_asgmts(1))
     check_day = schedule.keys.first
 
@@ -111,20 +115,13 @@ class Assignment < ApplicationRecord
       check_day -= 1
     end
     return schedule.values.flatten.each do |asgmt|
-      Assignment.find(asgmt.id).update(adj_date: asgmt.adj_date)
+      Assignment.find(asgmt[:id]).update(adj_date: asgmt[:adj_date])
     end
   end
 
   def self.final_adjusted_schedule
-    adj = self.date_grouped(self.flattened).transform_values do |asgmts|
-      asgmts.map do |a|
-        a.slice(:description, :og_date, :adj_date, :course_id)
-      end
-    end
-
-    adj.transform_keys do |date|
+    self.date_grouped(self.flattened).transform_values.transform_keys do |date|
       date - 1
     end
-    # adj.slice(:description, :og_date, :adj_date, :course_id)
   end
 end
