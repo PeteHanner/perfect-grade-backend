@@ -1,5 +1,5 @@
 class AssignmentsController < ApplicationController
   def index
-    render json: Assignment.final_adjusted_schedule
+    render json: Assignment.user_asgmts(1)
   end
 end

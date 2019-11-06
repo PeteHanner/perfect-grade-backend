@@ -3,7 +3,7 @@ class CourseSerializer < ActiveModel::Serializer
 
   def assignments
 
-    Assignment.date_grouped(self.object.assignments)
+    Assignment.date_grouped(self.object.assignments, :og_date)
 
     # self.object.assignments.map do |asg|
     #   {
