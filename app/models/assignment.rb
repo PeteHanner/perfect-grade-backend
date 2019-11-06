@@ -115,17 +115,16 @@ class Assignment < ApplicationRecord
     end
   end
 
-  def self.test_output()
-    # self.avg_per_day(user_asgmts(1))
-    self.ordered(user_asgmts(1))
-    # self.date_grouped(user_asgmts(1))
-    # self.no_empty_days()
-    # puts self.user_asgmts(1).length
-    # self.overwrite(1)
-  end
+  def self.final_adjusted_schedule
+    adj = self.date_grouped(self.flattened).transform_values do |asgmts|
+      asgmts.map do |a|
+        a.slice(:description, :og_date, :adj_date, :course_id)
+      end
+    end
 
-  # may use or not use this in actuality; does need to be applied somewhere to filter JSON
-  def serializer
-    asgmt.slice(:description, :og_date, :adj_date, :course_id)
+    adj.transform_keys do |date|
+      date - 1
+    end
+    # adj.slice(:description, :og_date, :adj_date, :course_id)
   end
 end
