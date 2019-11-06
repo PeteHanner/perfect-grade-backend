@@ -18,6 +18,16 @@ class Assignment < ApplicationRecord
     return asgmt_arr.sort_by(&:adj_date).reverse
   end
 
+  def serialized
+    {
+      id: self.id,
+      description: self.description,
+      og_date: self.og_date,
+      adj_date: self.adj_date,
+      course_id: self.course_id
+    }
+  end
+
   # create hash to store arrays of date-grouped assignments
   # # TODO: syllabi list due date, so push all dates back by one for 'work' date
   def self.date_grouped(asgmt_arr)
@@ -25,10 +35,10 @@ class Assignment < ApplicationRecord
     grouped_list = {}
     flat_list.each do |a|
       if grouped_list[a.adj_date]
-        grouped_list[a.adj_date] << a
+        grouped_list[a.adj_date] << a.serialized
       else
         grouped_list[a.adj_date] = []
-        grouped_list[a.adj_date] << a
+        grouped_list[a.adj_date] << a.serialized
       end
     end
     return grouped_list
