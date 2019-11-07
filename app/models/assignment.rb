@@ -2,21 +2,24 @@ class Assignment < ApplicationRecord
   belongs_to :course
 
   # Find all user assignments: flat array, sorted by non-modified due date
-  def self.user_asgmts(id)
-    # # TODO: make this flexible once auth is implemented
-    User.find(1).assignments.sort_by(&:og_date)
-  end
+  # def self.user_asgmts(id)
+  #   # # TODO: make this flexible once auth is implemented
+  #   User.find(1).assignments.sort_by(&:og_date)
+  # end
 
   # Calculate average assignments per day
-  def self.avg_per_day
-    asg_count = self.user_asgmts(1).length
-    date_difference = self.user_asgmts(1).last.og_date - self.user_asgmts(1).first.og_date
+  def self.avg_per_day(user_id)
+    asgs = User.find(user_id).assignments.sort_by(&:og_date)
+    asg_count = asgs.length
+    date_difference = asgs.last.og_date - asgs.first.og_date
     avg = (asg_count.to_f/date_difference.to_f).ceil
   end
 
   # Flatten step 1: backfill empty days
   def self.no_empty_days(asgs)
-    asgs = self.user_asgmts(1).sort_by(&:og_date)
+    # byebug
+    # asgs =
+    asgs.order(:og_date)
     check_day = asgs.first.og_date + 1
     last_day = asgs.last.og_date + 1
     grouped_asgs = self.date_grouped(asgs, :adj_date)
@@ -68,9 +71,34 @@ class Assignment < ApplicationRecord
 
 
   # Flatten step 2: spread out assignments evenly as possible
+  def self.level_adjust(date_grouped_hash)
+    date_range = date_grouped_hash.keys.sort
+    check_day = date_range.last
+    first_day = date_range.first
+    avg = self.avg_per_day(1) # # TODO: take out user ID hardcoding
 
+    until check_day == first_day
+      if date_grouped_hash[check_day].length > avg
+        prev_day = check_day - 1
+        while date_grouped_hash[check_day].length > avg
+          # date_grouped_hash[check_day][0].adj_date = prev_day
+          date_grouped_hash[prev_day] << date_grouped_hash[check_day].shift
+        end
+      end
+      check_day -= 1
+    end
+    date_grouped_hash
+  end
 
   # Flatten step 3: actually update db using the hash
+  def self.reassign_days(date_grouped_hash)
+    date_grouped_hash.each do |date, asg_arr|
+      asg_arr.each do |asg|
+        # minus one from adj date bc you actually DO an asgmt 1 day prior to due date
+        Assignment.find(asg.id).update(adj_date: (date - 1))
+      end
+    end
+  end
 
 
   # Higher-level method called to actually do the flattening
