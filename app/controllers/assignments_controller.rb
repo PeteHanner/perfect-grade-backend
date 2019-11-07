@@ -5,6 +5,7 @@ class AssignmentsController < ApplicationController
       asg_arr.map { |asg| asg.slice(:id, :description, :og_date, :adj_date, :course_id) }
     end
 
-    render json: serialized
+    render json: Assignment.avg_per_day
+    # render json: serialized
   end
 end
