@@ -5,7 +5,9 @@ class AssignmentsController < ApplicationController
       asg_arr.map { |asg| asg.slice(:id, :description, :og_date, :adj_date, :course_id) }
     end
 
-    render json: Assignment.avg_per_day
+
+    # render json: User.find(1).assignments
+    render json: Assignment.no_empty_days(User.find(1).assignments)#.sort_by{|k,v| k }
     # render json: serialized
   end
 end
