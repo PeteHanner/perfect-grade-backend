@@ -16,12 +16,12 @@ class Assignment < ApplicationRecord
   # asgmts => group of Assignment objects; date_field => og or adj date, depending on use
   def self.date_grouped(asgmts, date_field)
     grouped_list = {}
-    asgmts.map do |a|
-      if grouped_list[a[date_field]]
-        grouped_list[a[date_field]] << a
+    asgmts.map do | asgmt |
+      if grouped_list[asgmt[date_field]]
+        grouped_list[asgmt[date_field]] << asgmt
       else
-        grouped_list[a[date_field]] = []
-        grouped_list[a[date_field]] << a
+        grouped_list[asgmt[date_field]] = []
+        grouped_list[asgmt[date_field]] << asgmt
       end
     end
     grouped_list
