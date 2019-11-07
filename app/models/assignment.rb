@@ -22,7 +22,7 @@ class Assignment < ApplicationRecord
     check_day = asgs.first.og_date + 1
     last_day = asgs.last.adj_date + 1
     puts "Grouping assignments"
-    grouped_asgs = self.date_grouped(asgs, :adj_date)
+    grouped_asgs = self.date_grouped(asgs, :og_date)
     # byebug
 
     until check_day == last_day
@@ -81,6 +81,7 @@ class Assignment < ApplicationRecord
 
     puts "Starting Level adjust"
     until check_day == first_day
+      check_day -= 1 if !date_grouped_hash[check_day]
       if date_grouped_hash[check_day].length > avg
         prev_day = check_day - 1
         while date_grouped_hash[check_day].length > avg
