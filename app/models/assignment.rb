@@ -17,15 +17,17 @@ class Assignment < ApplicationRecord
 
   # Flatten step 1: backfill empty days
   def self.no_empty_days(asgs)
-    # byebug
-    # asgs =
-    asgs.order(:og_date)
+    puts "Ordering assignments"
+    asgs = asgs.order(:og_date)
     check_day = asgs.first.og_date + 1
-    last_day = asgs.last.og_date + 1
+    last_day = asgs.last.adj_date + 1
+    puts "Grouping assignments"
     grouped_asgs = self.date_grouped(asgs, :adj_date)
+    # byebug
 
     until check_day == last_day
       # reset empty days array for refill
+      puts check_day
       empty_days = []
       until grouped_asgs[check_day] && grouped_asgs[check_day].length > 0
         empty_days << check_day
@@ -77,6 +79,7 @@ class Assignment < ApplicationRecord
     first_day = date_range.first
     avg = self.avg_per_day(1) # # TODO: take out user ID hardcoding
 
+    puts "Starting Level adjust"
     until check_day == first_day
       if date_grouped_hash[check_day].length > avg
         prev_day = check_day - 1
@@ -87,17 +90,20 @@ class Assignment < ApplicationRecord
       end
       check_day -= 1
     end
+    puts "Done with level adjust"
     date_grouped_hash
   end
 
   # Flatten step 3: actually update db using the hash
   def self.reassign_days(date_grouped_hash)
+    puts "reassigning days"
     date_grouped_hash.each do |date, asg_arr|
       asg_arr.each do |asg|
         # minus one from adj date bc you actually DO an asgmt 1 day prior to due date
         Assignment.find(asg.id).update(adj_date: (date - 1))
       end
     end
+    puts "Done reassigning days"
   end
 
 
