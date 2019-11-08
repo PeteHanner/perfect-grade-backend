@@ -14,7 +14,7 @@ class CoursesController < ApplicationController
 
   def destroy
     puts params
+    render json: Course.find(params[:id])
     Course.destroy(params[:id])
-    render json: User.find(1).courses # # TODO: take out hardcoding once auth
   end
 end
