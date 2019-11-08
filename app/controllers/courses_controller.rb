@@ -11,4 +11,10 @@ class CoursesController < ApplicationController
     )
     render json: newCourse
   end
+
+  def destroy
+    puts params
+    Course.destroy(params[:id])
+    render json: User.find(1).courses # # TODO: take out hardcoding once auth
+  end
 end
