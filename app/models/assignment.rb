@@ -81,7 +81,7 @@ class Assignment < ApplicationRecord
 
     puts "Starting Level adjust"
     until check_day == first_day
-      check_day -= 1 if !date_grouped_hash[check_day]
+      check_day -= 1 until date_grouped_hash[check_day]
       if date_grouped_hash[check_day].length > avg
         prev_day = check_day - 1
         while date_grouped_hash[check_day].length > avg
