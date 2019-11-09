@@ -22,4 +22,16 @@ class AssignmentsController < ApplicationController
 
     render json: sorted
   end
+
+  def create
+    newAsgmt = Assignment.create(
+      description: params[:description],
+      og_date: params[:dueDate],
+      adj_date: params[:dueDate],
+      course: Course.find(params[:courseId]),
+      # user: User.find(1) # # TODO: take out hardcoding w auth
+    )
+
+    render json: newAsgmt
+  end
 end
