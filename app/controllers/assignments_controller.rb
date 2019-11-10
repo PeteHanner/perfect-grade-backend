@@ -34,4 +34,16 @@ class AssignmentsController < ApplicationController
 
     render json: newAsgmt
   end
+
+  def update
+    edited_asgmt = Assignment.find(params[:id]).update(
+      description: params[:newDesc],
+      og_date: params[:newDate],
+      adj_date: params[:newDate]
+    )
+
+    render json: edited_asgmt
+  end
+
+
 end

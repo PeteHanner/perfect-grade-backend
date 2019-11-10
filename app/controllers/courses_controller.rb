@@ -4,7 +4,6 @@ class CoursesController < ApplicationController
   end
 
   def create
-    # puts params[:courseTitle]
     newCourse = Course.create(
       name: params[:courseTitle],
       user: User.find(params[:userId])
