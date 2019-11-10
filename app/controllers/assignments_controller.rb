@@ -1,6 +1,5 @@
 class AssignmentsController < ApplicationController
   def index
-
     Assignment.flatten(User.find(1).assignments)
 
     asgs = User.find(1).assignments
@@ -19,7 +18,6 @@ class AssignmentsController < ApplicationController
 
     sorted = serialized.sort_by{|k,v| k }
 
-
     render json: sorted
   end
 
@@ -29,7 +27,6 @@ class AssignmentsController < ApplicationController
       og_date: params[:dueDate],
       adj_date: params[:dueDate],
       course: Course.find(params[:courseId]),
-      # user: User.find(1) # # TODO: take out hardcoding w auth
     )
 
     render json: newAsgmt
