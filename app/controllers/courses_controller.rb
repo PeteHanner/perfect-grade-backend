@@ -11,8 +11,16 @@ class CoursesController < ApplicationController
     render json: newCourse
   end
 
-  def destroy
+  def update
     puts params
+    edited_course = Course.find(params[:courseId]).update(
+      name: params[:newTitle]
+    )
+
+    render json: edited_course
+  end
+
+  def destroy
     render json: Course.find(params[:id])
     Course.destroy(params[:id])
   end
