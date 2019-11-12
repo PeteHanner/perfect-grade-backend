@@ -1,3 +1,64 @@
+def self.level_adjust(date_grouped_hash)
+  date_range = date_grouped_hash.keys.sort
+  puts date_range
+  check_day = date_range.last
+  first_day = date_range.first
+  avg = self.avg_per_day(1) # # TODO: take out user ID hardcoding
+
+  until check_day == first_day
+    check_day -= 1 until date_grouped_hash[check_day]
+    if date_grouped_hash[check_day].length > avg
+      prev_day = check_day - 1
+      puts check_day
+      while date_grouped_hash[check_day].length > avg
+        date_grouped_hash[prev_day] << date_grouped_hash[check_day].shift
+      end
+    end
+    check_day -= 1
+  end
+  date_grouped_hash
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def self.no_empty_days(asgs)
   asgs = asgs.order(:og_date)
   check_day = asgs.first.og_date + 1
