@@ -34,16 +34,15 @@ class Assignment < ApplicationRecord
 
     while check_day < last_day
       # find group of empty_days until day has something
+      # break this loop once end of semester is found
       empty_days = []
       until (agenda[check_day] && agenda[check_day].length > 0) || (check_day >= last_day)
         empty_days << check_day
         check_day += 1
-        puts check_day
       end
 
       if empty_days.length > 0
-        # more empty days than assignments
-        if empty_days.length >= agenda[check_day].length
+        if empty_days.length >= agenda[check_day].length # more empty days than assignments
           # 1 assignment per day from beginning
           i = 0
           while agenda[check_day].length > 0
@@ -75,7 +74,6 @@ class Assignment < ApplicationRecord
       end
       check_day += 1
     end
-
     return agenda
   end
 
