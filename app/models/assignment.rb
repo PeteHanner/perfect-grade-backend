@@ -75,6 +75,7 @@ class Assignment < ApplicationRecord
       check_day += 1
     end
 
+    # delete any empty days at the end of the semester
     agenda = agenda.sort
     i = -1
     while agenda[i][1].length < 1
@@ -88,25 +89,22 @@ class Assignment < ApplicationRecord
 
   # Flatten step 2: spread out assignments evenly as possible
   def self.level_adjust(agenda)
-    agenda = agenda.sort
-    agenda[-1]
-    # avg = self.avg_per_day(1) # # TODO: take out user ID hardcoding
-    # first_day = agenda[0][1].first.og_date
-    # check_day = agenda[-1][0]
-    # # handle any empty days at end of agenda
-    # check_day -= 1 until agenda[check_day]
-    #
-    # while check_day > first_day
-    #   # move asgmts back 1 day until day has average amount
-    #   if agenda[check_day].length > avg
-    #     prev_day = check_day - 1
-    #     while agenda[check_day].length > avg
-    #       agenda[prev_day] << agenda[check_day].shift
-    #     end
-    #   end
-    #   check_day -= 1
-    # end
-    # return agenda.sort
+    agenda = agenda.to_h
+    avg = self.avg_per_day(1) # # TODO: take out user ID hardcoding
+    first_day = agenda.keys.first
+    check_day = agenda.keys.last
+
+    while check_day > first_day
+      # move asgmts back 1 day until day has average amount
+      if agenda[check_day].length > avg
+        prev_day = check_day - 1
+        while agenda[check_day].length > avg
+          agenda[prev_day] << agenda[check_day].shift
+        end
+      end
+      check_day -= 1
+    end
+    return agenda
   end
 
   # Flatten step 3: actually update db using the hash
