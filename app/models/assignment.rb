@@ -117,6 +117,12 @@ class Assignment < ApplicationRecord
     end
   end
 
+  def self.reset_days(asgmt_arr)
+    asgmt_arr.each do |a|
+      a.update(adj_date: a.og_date)
+    end
+  end
+
 
   # Higher-level method called to actually do the flattening
   def self.flatten(asgmt_arr)

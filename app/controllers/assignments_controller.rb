@@ -17,9 +17,10 @@ class AssignmentsController < ApplicationController
     #
     # sorted = serialized.sort_by{|k,v| k }
 
-    no_empties = Assignment.no_empty_days(User.find(1).assignments)
+    # no_empties = Assignment.no_empty_days(User.find(1).assignments)
     # render json: no_empties
-    render json: Assignment.level_adjust(no_empties)
+    # render json: Assignment.level_adjust(no_empties)
+    render json: User.find(1).assignments
   end
 
   def first_request
@@ -45,6 +46,7 @@ class AssignmentsController < ApplicationController
   end
 
   def fresh_request
+    Assignment.reset_days(User.find(1).assignments)
     Assignment.flatten(User.find(1).assignments)
 
     asgs = User.find(1).assignments
