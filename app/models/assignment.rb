@@ -9,60 +9,80 @@ class Assignment < ApplicationRecord
     avg = (asg_count.to_f/date_difference.to_f).ceil
   end
 
+  # Group a flat array of assignments together by date
+  # asgmts => group of Assignment objects; date_field => og or adj date, depending on use
+  def self.date_grouped(asgmts, date_field)
+    grouped_list = {}
+    asgmts.each do | asgmt |
+      if grouped_list[asgmt[date_field]]
+        grouped_list[asgmt[date_field]] << asgmt
+      else
+        grouped_list[asgmt[date_field]] = []
+        grouped_list[asgmt[date_field]] << asgmt
+      end
+    end
+    grouped_list
+  end
+
   # Flatten step 1: backfill empty days
   def self.no_empty_days(asgs)
-    asgs = asgs.order(:og_date)
-    check_day = asgs.first.og_date + 1
-    last_day = asgs.last.adj_date + 1
-    grouped_asgs = self.date_grouped(asgs, :og_date)
+    asgs = asgs.sort_by(&:og_date)
+    first_day = asgs.first.og_date
+    last_day = asgs.last.og_date
+    check_day = first_day + 1
+    agenda = self.date_grouped(asgs, :og_date)
 
-    until check_day == last_day
-      # reset empty days array for refill
+    while check_day < last_day
+      # find group of empty_days until day has something
       empty_days = []
-      until (grouped_asgs[check_day] && grouped_asgs[check_day].length > 0)
+      until agenda[check_day] && agenda[check_day].length > 0
         empty_days << check_day
         check_day += 1
       end
 
-      # backfill empty days
-      if empty_days.length >= grouped_asgs[check_day].length
-        # if empty days outnumber asgmts, move them back 1/day as far as possible
-        i = 0
-        while i < grouped_asgs[check_day].length
-          grouped_asgs[empty_days[i]] = []
-          grouped_asgs[empty_days[i]] << grouped_asgs[check_day].shift
-          i += 1
-        end
-      elsif empty_days[0]
-        # if asgmts outnumber empty days, spread them out roughly evenly
-        # set up empty days to avoid overwriting later
-        empty_days.each { |day| grouped_asgs[day] = [] }
-        # 1 asgmt from og day to each empty day
-        # loop back to beginning of empty days when you hit the end
-        # stop once og day asgmts = # of loops made + 1
-        stop_ctr = 1
-        while grouped_asgs[check_day].length > stop_ctr
+      if empty_days.length > 0
+        # more empty days than assignments
+        if empty_days.length >= agenda[check_day].length
+          # 1 assignment per day from beginning
           i = 0
-          back_day = -1
-          while i < empty_days.length && grouped_asgs[check_day].length > stop_ctr
-            grouped_asgs[empty_days[back_day]] << grouped_asgs[check_day].shift
-            back_day -= 1
+          while agenda[check_day].length > 0
+            agenda[empty_days[i]] = []
+            agenda[empty_days[i]] << agenda[check_day].shift
             i += 1
           end
-          stop_ctr += 1
+          # set check day back to previously empty day
+          check_day = empty_days[0]
+        else # more assignments than empty days
+          # set up empty days to avoid overwriting later
+          empty_days.each { |day| agenda[day] = [] }
+          # 1 asgmt from og day to each empty day
+          # loop back to beginning of empty days when you hit the end
+          # stop once og day asgmts = # of loops made + 1
+          stop_ctr = 1
+          while agenda[check_day].length > stop_ctr
+            i = 0
+            back_day = -1
+            while i < empty_days.length && agenda[check_day].length > stop_ctr
+              agenda[empty_days[back_day]] << agenda[check_day].shift
+              back_day -= 1
+              i += 1
+            end
+            stop_ctr += 1
+          end
+          check_day = empty_days[0]
         end
       end
-      # start looking for next grouped_asgs gap
       check_day += 1
-      check_day = last_day if check_day > last_day
     end
-    grouped_asgs
+
+    return agenda
   end
 
 
   # Flatten step 2: spread out assignments evenly as possible
   def self.level_adjust(date_grouped_hash)
     date_range = date_grouped_hash.keys.sort
+    puts date_range
     check_day = date_range.last
     first_day = date_range.first
     avg = self.avg_per_day(1) # # TODO: take out user ID hardcoding
@@ -97,21 +117,5 @@ class Assignment < ApplicationRecord
     step_one = self.no_empty_days(asgmt_arr)
     step_two = self.level_adjust(step_one)
     step_three = self.reassign_days(step_two)
-  end
-
-
-  # Group a flat array of assignments together by date
-  # asgmts => group of Assignment objects; date_field => og or adj date, depending on use
-  def self.date_grouped(asgmts, date_field)
-    grouped_list = {}
-    asgmts.each do | asgmt |
-      if grouped_list[asgmt[date_field]]
-        grouped_list[asgmt[date_field]] << asgmt
-      else
-        grouped_list[asgmt[date_field]] = []
-        grouped_list[asgmt[date_field]] << asgmt
-      end
-    end
-    grouped_list
   end
 end
