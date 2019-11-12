@@ -18,7 +18,7 @@ class AssignmentsController < ApplicationController
     # sorted = serialized.sort_by{|k,v| k }
     #
     # render json: sorted
-    render json: Assignment.no_empty_days(User.find(1).assignments)
+    render json: Assignment.no_empty_days(User.find(1).assignments).sort
   end
 
   def first_request

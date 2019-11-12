@@ -35,9 +35,10 @@ class Assignment < ApplicationRecord
     while check_day < last_day
       # find group of empty_days until day has something
       empty_days = []
-      until agenda[check_day] && agenda[check_day].length > 0
+      until (agenda[check_day] && agenda[check_day].length > 0) || (check_day >= last_day)
         empty_days << check_day
         check_day += 1
+        puts check_day
       end
 
       if empty_days.length > 0
