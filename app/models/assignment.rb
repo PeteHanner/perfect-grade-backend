@@ -29,7 +29,7 @@ class Assignment < ApplicationRecord
     asgs = asgs.sort_by(&:og_date)
     first_day = asgs.first.og_date
     last_day = asgs.last.og_date
-    check_day = first_day + 1
+    check_day = first_day
     agenda = self.date_grouped(asgs, :og_date)
 
     while check_day < last_day
@@ -74,6 +74,7 @@ class Assignment < ApplicationRecord
       end
       check_day += 1
     end
+
     return agenda
   end
 
