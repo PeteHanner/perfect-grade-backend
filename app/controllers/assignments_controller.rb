@@ -71,6 +71,4 @@ class AssignmentsController < ApplicationController
     render json: Assignment.find(params[:id])
     Assignment.destroy(params[:id])
   end
-
-
 end
