@@ -8,7 +8,7 @@ class User < ApplicationRecord
     wrong_length: 'Passwords must be between 8 and 20 characters'
   },
   format: {
-    with: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+    with: /\A(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}\z/,
     message: 'Passwords must contain at least one letter, number, and special character.'
   }
 
