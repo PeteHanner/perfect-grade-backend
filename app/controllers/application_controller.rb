@@ -7,14 +7,14 @@ class ApplicationController < ActionController::API
   end
 
   def auth_header
-    request.headers['Authorization']
+    request.headers["Authorization"]
   end
 
   def decoded_token
     if auth_header
-      token = auth_header.split(' ')[1]
+      token = auth_header.split(" ")[1]
       begin
-        JWT.decode(token, PW_KEY, true, algorithm: 'HS256')
+        JWT.decode(token, PW_KEY, true, algorithm: "HS256")
       rescue JWT::DecodeError
         nil
       end
@@ -23,7 +23,7 @@ class ApplicationController < ActionController::API
 
   def current_user
     if decoded_token
-      user_id = decoded_token[0]['id']
+      user_id = decoded_token[0]["id"]
       @user = User.find(user_id)
     end
   end
@@ -33,6 +33,7 @@ class ApplicationController < ActionController::API
   end
 
   def authorized
-    render json: {message: 'You are not logged in'}, status: :unauthorized unless logged_in?
+    render json: { message: "You are not logged in" },
+           status: :unauthorized unless logged_in?
   end
 end

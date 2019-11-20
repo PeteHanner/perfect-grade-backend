@@ -1,24 +1,9 @@
-# README
+# PERFECT GRADE
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### BACKEND
 
-Things you may want to cover:
+Capstone project for Flatiron School DC.
 
-* Ruby version
+Students can enter all their assignments for a given semester, and upon pressing the "Make The Grade" button, receive back a "flattened" schedule. This adjusted schedule finds days with excess assignments and shifts them backwards to produce more consistent, regular workloads across a school semester.
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Special thanks on this project to Tyler Curran, Rachael Tomlinson, Meghan Wingert, Tatiyahna Blakely, and Molly Magoffin. Extra special thanks to DaYoung Lee, JC Chang, and Shannon Nabors.
