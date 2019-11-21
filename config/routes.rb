@@ -6,4 +6,5 @@ Rails.application.routes.draw do
   resources :courses, only: [:index, :create, :update, :destroy]
   resources :users, only: [:create, :update, :destroy]
   post "/login", to: "auth#login"
+  get "/profile", to: "users#profile"
 end
