@@ -6,7 +6,7 @@ Capstone project for Flatiron School DC.
 
 Students can enter all their assignments for a given semester, and upon pressing the "Make The Grade" button, receive back a "flattened" schedule. This adjusted schedule finds days with excess assignments and shifts them backwards to produce more consistent, regular workloads across a school semester.
 
-This project was inspired by the real experiences I had in college. Lots of friends (and myself) had bad habits of thinking we had "no work" and proceeding to goof off... until the avalanche of assignments we were conveniently avoiding came crashing down. 
+This project was inspired by the real experiences I had in college. Lots of friends (and myself) had bad habits of thinking we had "no work" and proceeding to goof off... until the avalanche of assignments we were conveniently avoiding came crashing down.
 
 Ultimately, I solved the problem through "flattening" my semester in advance, but the new problem became the tedium and time consumed in the process. This project aims to automate the tedium and hopefully take some stress off the shoulders of already too-stressed students.
 

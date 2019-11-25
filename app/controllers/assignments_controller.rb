@@ -1,25 +1,5 @@
 class AssignmentsController < ApplicationController
   def index
-    # Assignment.flatten(User.find(1).assignments)
-    #
-    # asgs = User.find(1).assignments
-    # grouped = Assignment.date_grouped(asgs, :adj_date)
-    #
-    # serialized = grouped.transform_values do |asg_arr|
-    #   asg_arr.map do |asg|
-    #     # asg.slice(:id, :description, :og_date, :adj_date)
-    #     asg_obj = asg.slice(:id, :description, :og_date, :adj_date)
-    #     course_data = asg.course.slice(:id, :name)
-    #     asg_obj[:course] = course_data
-    #     asg_obj
-    #   end
-    # end
-    #
-    # sorted = serialized.sort_by{|k,v| k }
-
-    # no_empties = Assignment.no_empty_days(User.find(1).assignments)
-    # render json: no_empties
-    # render json: Assignment.level_adjust(no_empties)
     render json: User.find(1).assignments
   end
 
@@ -31,7 +11,6 @@ class AssignmentsController < ApplicationController
 
     serialized = grouped.transform_values do |asg_arr|
       asg_arr.map do |asg|
-        # asg.slice(:id, :description, :og_date, :adj_date)
         asg_obj = asg.slice(:id, :description, :og_date, :adj_date)
         course_data = asg.course.slice(:id, :name)
         asg_obj[:course] = course_data
@@ -54,7 +33,6 @@ class AssignmentsController < ApplicationController
 
     serialized = grouped.transform_values do |asg_arr|
       asg_arr.map do |asg|
-        # asg.slice(:id, :description, :og_date, :adj_date)
         asg_obj = asg.slice(:id, :description, :og_date, :adj_date)
         course_data = asg.course.slice(:id, :name)
         asg_obj[:course] = course_data
@@ -93,6 +71,4 @@ class AssignmentsController < ApplicationController
     render json: Assignment.find(params[:id])
     Assignment.destroy(params[:id])
   end
-
-
 end
