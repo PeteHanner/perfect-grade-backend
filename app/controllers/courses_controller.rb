@@ -1,12 +1,12 @@
 class CoursesController < ApplicationController
   def index
-    render json: User.find(1).courses
+    render json: current_user.courses
   end
 
   def create
     newCourse = Course.create(
       name: params[:courseTitle],
-      user: User.find(params[:userId])
+      user: User.find(params[:userId]),
     )
     render json: newCourse
   end
@@ -14,7 +14,7 @@ class CoursesController < ApplicationController
   def update
     puts params
     edited_course = Course.find(params[:courseId]).update(
-      name: params[:newTitle]
+      name: params[:newTitle],
     )
 
     render json: edited_course
