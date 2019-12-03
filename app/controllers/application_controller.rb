@@ -23,7 +23,7 @@ class ApplicationController < ActionController::API
 
   def current_user
     if decoded_token
-      user_id = decoded_token[0]["id"]
+      user_id = decoded_token[0]["user_id"]
       @user = User.find(user_id)
     end
   end
@@ -33,7 +33,6 @@ class ApplicationController < ActionController::API
   end
 
   def authorized
-    # byebug
     render json: { message: "You are not logged in" },
            status: :unauthorized unless logged_in?
   end

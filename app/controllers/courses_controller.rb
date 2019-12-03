@@ -1,5 +1,6 @@
 class CoursesController < ApplicationController
   def index
+    byebug
     render json: current_user.courses
   end
 
