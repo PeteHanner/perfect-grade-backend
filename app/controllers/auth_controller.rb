@@ -3,6 +3,7 @@ class AuthController < ApplicationController
 
   def login
     @user = User.find_by(name: user_login_params[:name])
+    # puts @user
 
     if @user && @user.authenticate(user_login_params[:password])
       token = encode_token({ user_id: @user.id })
@@ -17,6 +18,6 @@ class AuthController < ApplicationController
   private
 
   def user_login_params
-    params.require(:user).permit(:name, :password)
+    params.require(:user).permit(:name, :password, :id, :courses)
   end
 end

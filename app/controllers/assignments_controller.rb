@@ -1,12 +1,12 @@
 class AssignmentsController < ApplicationController
   def index
-    render json: User.find(1).assignments
+    render json: current_user.assignments
   end
 
   def first_request
-    Assignment.flatten(User.find(1).assignments)
+    Assignment.flatten(current_user.assignments)
 
-    asgs = User.find(1).assignments
+    asgs = current_user.assignments
     grouped = Assignment.date_grouped(asgs, :adj_date)
 
     serialized = grouped.transform_values do |asg_arr|
@@ -18,17 +18,17 @@ class AssignmentsController < ApplicationController
       end
     end
 
-    sorted = serialized.sort_by{|k,v| k }
+    sorted = serialized.sort_by { |k, v| k }
 
     render json: sorted
     puts "Delivered first request"
   end
 
   def fresh_request
-    Assignment.reset_days(User.find(1).assignments)
-    Assignment.flatten(User.find(1).assignments)
+    Assignment.reset_days(current_user.assignments)
+    Assignment.flatten(current_user.assignments)
 
-    asgs = User.find(1).assignments
+    asgs = current_user.assignments
     grouped = Assignment.date_grouped(asgs, :adj_date)
 
     serialized = grouped.transform_values do |asg_arr|
@@ -40,10 +40,10 @@ class AssignmentsController < ApplicationController
       end
     end
 
-    sorted = serialized.sort_by{|k,v| k }
+    sorted = serialized.sort_by { |k, v| k }
 
     render json: sorted
-    puts 'Delivered fresh request'
+    puts "Delivered fresh request"
   end
 
   def create
@@ -61,7 +61,7 @@ class AssignmentsController < ApplicationController
     edited_asgmt = Assignment.find(params[:id]).update(
       description: params[:newDesc],
       og_date: params[:newDate],
-      adj_date: params[:newDate]
+      adj_date: params[:newDate],
     )
 
     render json: edited_asgmt
