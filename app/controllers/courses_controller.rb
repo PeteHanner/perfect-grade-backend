@@ -6,7 +6,7 @@ class CoursesController < ApplicationController
   def create
     newCourse = Course.create(
       name: params[:courseTitle],
-      user: User.find(params[:userId]),
+      user: current_user,
     )
     render json: newCourse
   end
