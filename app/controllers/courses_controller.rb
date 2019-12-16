@@ -6,13 +6,12 @@ class CoursesController < ApplicationController
   def create
     newCourse = Course.create(
       name: params[:courseTitle],
-      user: User.find(params[:userId]),
+      user: current_user,
     )
     render json: newCourse
   end
 
   def update
-    puts params
     edited_course = Course.find(params[:courseId]).update(
       name: params[:newTitle],
     )
