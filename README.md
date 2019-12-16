@@ -4,15 +4,37 @@
 
 Capstone project for Flatiron School DC.
 
-Students can enter all their assignments for a given semester, and upon pressing the "Make The Grade" button, receive back a "flattened" schedule. This adjusted schedule finds days with excess assignments and shifts them backwards to produce more consistent, regular workloads across a school semester.
+This project was inspired by the real experiences I had in college. Lots of friends (and myself) had bad habits of thinking we had "no work" and proceeding to goof off... until the avalanche of assignments we were conveniently avoiding came crashing down. 
 
-This project was inspired by the real experiences I had in college. Lots of friends (and myself) had bad habits of thinking we had "no work" and proceeding to goof off... until the avalanche of assignments we were conveniently avoiding came crashing down.
+Ultimately, I solved the problem by evenly spreading my workload out across the whole semester in advance. This led to a new problem, however, of the tedium and time consumed in the process. 
 
-Ultimately, I solved the problem through "flattening" my semester in advance, but the new problem became the tedium and time consumed in the process. This project aims to automate the tedium and hopefully take some stress off the shoulders of already too-stressed students.
+My aim with this project is to automate that problem. My hope is that students will be able to use this tool to find a consistent daily workload for their semesters. When you can block off a predictable set of time for working every day, it builds good habits and takes a load of stress off your shoulders so you can actually focus on the work itself. 
+
+### Demo
+
+The welcome page gives you the option of logging in or creating an account. Attempting to navigate to any other endpoint without being logged in will redirect you to the welcome page.
+
+![Login](https://imgur.com/me08obh.gif)
+
+After logging in, a user can add all their courses for the semester. Within each course, they then can add all assignments from the syllabus. 
+
+![Adding assignments](https://media.giphy.com/media/LPwWru3y9CSSJ6uC9i/giphy.gif)
+
+Courses and assignments can be edited and deleted.
+
+![Editing and deleting](https://media.giphy.com/media/US7N2k3aCcZiyi6fUC/giphy.gif)
+
+Once all assignments for the full semester have been entered, clicking "make the grade" from the main page will calculate a flattened workload. All empty days will be filled, and days with more assignments will be spread out to days with fewer assignments. 
+
+This spreading only goes backward, so no assignments will be listed past its due date. The flattening algorithm also shows what day the assignment should actually be done based on the due date. This means students can enter assignments straight from the syllabus as written and get back an actionable, consistent plan for the whole semester with no additional effort.
+
+![Final flattened schedule](https://media.giphy.com/media/mA6SfkOkuqum99Hz0Z/giphy.gif)
 
 ### Status
 
-Currently building out login features. The demo version of the project shown at the Flatiron showcase used a single hard-coded user account. Immediate goal is to implement secure logins with JWT so users can create and save their own courses & assignments.
+The basic version of the app is up and running with support for user accounts and secure login.
+
+Known issues include the CSV export, which needs to be modified and tested for compatibility with major to-do apps.
 
 Future features may include a "stress score" for individual assignments (allowing the algorithm to sort out a truly equitable per-day workload), and handling for regularly-repeating assignments.
 
