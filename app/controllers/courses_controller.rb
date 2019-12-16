@@ -12,7 +12,6 @@ class CoursesController < ApplicationController
   end
 
   def update
-    puts params
     edited_course = Course.find(params[:courseId]).update(
       name: params[:newTitle],
     )
