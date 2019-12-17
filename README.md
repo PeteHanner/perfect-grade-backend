@@ -30,8 +30,6 @@ This spreading only goes backward, so no assignment will be listed later than it
 
 ![Final flattened schedule](https://media.giphy.com/media/mA6SfkOkuqum99Hz0Z/giphy.gif)
 
-![Final flattened schedule](https://media.giphy.com/media/mA6SfkOkuqum99Hz0Z/giphy.gif)
-
 ### Status
 
 The basic version of the app is up and running with support for user accounts and secure login.
