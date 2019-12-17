@@ -26,7 +26,9 @@ Courses and assignments can be edited and deleted.
 
 Once all assignments for the full semester have been entered, clicking "make the grade" from the main page will calculate a flattened workload. All empty days will be filled, and days with more assignments will be spread out to days with fewer assignments. 
 
-This spreading only goes backward, so no assignments will be listed past its due date. The flattening algorithm also shows what day the assignment should actually be done based on the due date. This means students can enter assignments straight from the syllabus as written and get back an actionable, consistent plan for the whole semester with no additional effort.
+This spreading only goes backward, so no assignment will be listed later than its due date. The flattening algorithm also automatically adjusts dates so the final schedule lists what date to actually complete an assignment, not its due date in class (i.e. an assignment due to be turned in on Wednesday will be listed no later than Tuesday on the flattened schedule). This means students can enter assignments straight from the syllabus as written and get back an actionable, consistent plan for the whole semester with no additional effort.
+
+![Final flattened schedule](https://media.giphy.com/media/mA6SfkOkuqum99Hz0Z/giphy.gif)
 
 ![Final flattened schedule](https://media.giphy.com/media/mA6SfkOkuqum99Hz0Z/giphy.gif)
 
